@@ -1,0 +1,13 @@
+agno
+groq
+pydantic
+numpy
+pathlib
+pyttsx3 
+requests
+diskcache
+python-pptx
+watchdog
+prompt-toolkit
+PyPDF2
+
