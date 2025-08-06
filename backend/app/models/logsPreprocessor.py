@@ -1,5 +1,10 @@
 import re
 import json
+import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 # Common anomaly patterns
 ANOMALY_KEYWORDS = [
@@ -16,6 +21,11 @@ def is_anomalous(log_line: str) -> bool:
             return True
     return False
 
+def extract_timestamp(log_line: str) -> str:
+    """Extract timestamp from log line using regex pattern."""
+    timestamp_match = re.search(r"\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(?:,\d+)?", log_line)
+    return timestamp_match.group(0) if timestamp_match else "UNKNOWN"
+
 def extract_compact_error(log_line: str) -> str:
     # Try to extract the service and a summary
     match = re.search(r"\[(.*?)\].*?(Exception|Failed|Error|Refused|Timeout|Killed|Unavailable|Crash|Panic)", log_line, re.IGNORECASE)
@@ -26,28 +36,49 @@ def extract_compact_error(log_line: str) -> str:
             return f"{issue.group(0).strip()} in {service}"
     return f"Anomaly detected: {log_line.replace('\t', ' ').strip()}"
 
-def process_logs(input_path: str, output_path: str) -> dict:
+def extract_anomaly_metadata(log_line: str, line_number: int, source_file: str = None) -> dict:
+    """Extract comprehensive metadata for an anomalous log line."""
+    # Normalize source_file to just the filename if it's a full path
+    normalized_source_file = os.path.basename(source_file) if source_file else None
+    
+    return {
+        "timestamp": extract_timestamp(log_line),
+        "compact_error": extract_compact_error(log_line),
+        "line": log_line.strip(),
+        "line_number": line_number,
+        "source_file": normalized_source_file
+    }
+
+def process_logs(input_path: str, output_path: str, source_file: str = None) -> dict:
     """
     Processes logs from input_path, extracts anomalies without duplicates,
     and writes them to output_path. Also returns the extracted anomalies as a dictionary.
+    Now includes enhanced metadata with timestamps, line numbers, and source file info.
     """
     result = {}
-    seen_anomalies = set()
+    seen_compact_errors = set()
     count = 1
+    
+    # Use source_file parameter or extract from input_path
+    if source_file is None:
+        source_file = input_path
 
     with open(input_path, "r") as infile:
-        for line in infile:
+        for line_number, line in enumerate(infile, 1):
             if is_anomalous(line):
-                compact_error = extract_compact_error(line)
-                if compact_error not in seen_anomalies:
-                    seen_anomalies.add(compact_error)
-                    result[str(count)] = compact_error
+                metadata = extract_anomaly_metadata(line, line_number, source_file)
+                compact_error = metadata["compact_error"]
+                
+                # Check for duplicates based on compact_error
+                if compact_error not in seen_compact_errors:
+                    seen_compact_errors.add(compact_error)
+                    result[str(count)] = metadata
                     count += 1
 
     with open(output_path, "w") as outfile:
         json.dump(result, outfile, indent=2)
 
-    print(f"Extracted {count - 1} unique anomalies to {output_path}")
+    logging.info(f"Extracted {count - 1} unique anomalies to {output_path}")
     return result
 
 if __name__ == "__main__":

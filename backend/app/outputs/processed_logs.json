@@ -1,0 +1,65 @@
+{
+  "1": {
+    "timestamp": "2025-07-30 08:00:08,567",
+    "compact_error": "ERROR [payment-service] Database connection failed: Connection refused in payment-service",
+    "line": "2025-07-30 08:00:08,567 ERROR [payment-service] Database connection failed: Connection refused",
+    "line_number": 12,
+    "source_file": "exLogs.log"
+  },
+  "2": {
+    "timestamp": "2025-07-30 08:00:08,568",
+    "compact_error": "ERROR [payment-service] java.sql.SQLTransientConnectionException: Could not connect to database server in payment-service",
+    "line": "2025-07-30 08:00:08,568 ERROR [payment-service] java.sql.SQLTransientConnectionException: Could not connect to database server",
+    "line_number": 13,
+    "source_file": "exLogs.log"
+  },
+  "3": {
+    "timestamp": "2025-07-30 08:00:08,789",
+    "compact_error": "ERROR [api-gateway] POST /api/v1/payments - 503 - Service Unavailable in api-gateway",
+    "line": "2025-07-30 08:00:08,789 ERROR [api-gateway] POST /api/v1/payments - 503 - Service Unavailable",
+    "line_number": 16,
+    "source_file": "exLogs.log"
+  },
+  "4": {
+    "timestamp": "2025-07-30 08:00:11,678",
+    "compact_error": "ERROR [notification-service] SMTP connection timeout in notification-service",
+    "line": "2025-07-30 08:00:11,678 ERROR [notification-service] SMTP connection timeout",
+    "line_number": 22,
+    "source_file": "exLogs.log"
+  },
+  "5": {
+    "timestamp": "2025-07-30 08:00:11,679",
+    "compact_error": "ERROR [notification-service] javax.mail.MessagingException: Could not connect to SMTP host: smtp.gmail.com, port: 587 in notification-service",
+    "line": "2025-07-30 08:00:11,679 ERROR [notification-service] javax.mail.MessagingException: Could not connect to SMTP host: smtp.gmail.com, port: 587",
+    "line_number": 23,
+    "source_file": "exLogs.log"
+  },
+  "6": {
+    "timestamp": "2025-07-30 08:02:28,123",
+    "compact_error": "Anomaly detected: 2025-07-30 08:02:28,123 ERROR [api-gateway] PUT /api/v1/users/profile - 409 - Conflict",
+    "line": "2025-07-30 08:02:28,123 ERROR [api-gateway] PUT /api/v1/users/profile - 409 - Conflict",
+    "line_number": 25,
+    "source_file": "exLogs.log"
+  },
+  "7": {
+    "timestamp": "2025-07-30 08:02:31,567",
+    "compact_error": "Anomaly detected: 2025-07-30 08:02:31,567 ERROR [payment-service] Merchant account suspended",
+    "line": "2025-07-30 08:02:31,567 ERROR [payment-service] Merchant account suspended",
+    "line_number": 29,
+    "source_file": "exLogs.log"
+  },
+  "8": {
+    "timestamp": "2025-07-30 08:02:31,568",
+    "compact_error": "Anomaly detected: 2025-07-30 08:02:31,568 ERROR [payment-service] Account suspension notice from payment processor",
+    "line": "2025-07-30 08:02:31,568 ERROR [payment-service] Account suspension notice from payment processor",
+    "line_number": 30,
+    "source_file": "exLogs.log"
+  },
+  "9": {
+    "timestamp": "2025-07-30 08:02:31,569",
+    "compact_error": "Anomaly detected: 2025-07-30 08:02:31,569 ERROR [payment-service] Reason: Unusual chargeback activity threshold exceeded",
+    "line": "2025-07-30 08:02:31,569 ERROR [payment-service] Reason: Unusual chargeback activity threshold exceeded",
+    "line_number": 31,
+    "source_file": "exLogs.log"
+  }
+}
