@@ -19,6 +19,9 @@ class ErrorType(str, Enum):
     RESOURCE_EXHAUSTION = "Resource Exhaustion"
     DEPLOYMENT_ISSUE = "Deployment Issue"
     TIMEOUT_ERROR = "Timeout"
+    BUSINESS_LOGIC_ERROR = "Business Logic Error"
+    PAYMENT_ERROR = "Payment Error"
+    COMMUNICATION_ERROR = "Communication Error"
     UNKNOWN_ERROR = "Unknown"
 
 class ErrorSubtype(str, Enum):
@@ -34,6 +37,12 @@ class ErrorSubtype(str, Enum):
     SSL_HANDSHAKE_ERROR = "SSL Handshake Error"
     PERMISSION_DENIED = "Permission Denied"
     SERVICE_UNAVAILABLE = "Service Unavailable"
+    CONFLICT = "Conflict"
+    SUSPENSION = "Account Suspension"
+    CHARGEBACK = "Chargeback"
+    HTTP_4XX = "HTTP 4XX Error"
+    HTTP_5XX = "HTTP 5XX Error"
+    SMTP_ERROR = "SMTP Error"
     UNKNOWN = "Unknown"
 
 class SeverityLevel(str, Enum):

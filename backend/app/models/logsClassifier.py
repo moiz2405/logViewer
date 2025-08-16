@@ -38,6 +38,19 @@ ERROR_TYPES: Dict[str, Tuple[str, str]] = {
     "quota": (ErrorType.RESOURCE_EXHAUSTION.value, ErrorSubtype.RATE_LIMIT_HIT.value),
     "rate": (ErrorType.RESOURCE_EXHAUSTION.value, ErrorSubtype.RATE_LIMIT_HIT.value),
     "circuit": (ErrorType.INFRASTRUCTURE_ERROR.value, ErrorSubtype.SERVICE_UNAVAILABLE.value),
+    "conflict": (ErrorType.BUSINESS_LOGIC_ERROR.value, ErrorSubtype.CONFLICT.value),
+    "suspension": (ErrorType.PAYMENT_ERROR.value, ErrorSubtype.SUSPENSION.value),
+    "suspended": (ErrorType.PAYMENT_ERROR.value, ErrorSubtype.SUSPENSION.value),
+    "chargeback": (ErrorType.PAYMENT_ERROR.value, ErrorSubtype.CHARGEBACK.value),
+    "smtp": (ErrorType.COMMUNICATION_ERROR.value, ErrorSubtype.SMTP_ERROR.value),
+    "mail": (ErrorType.COMMUNICATION_ERROR.value, ErrorSubtype.SMTP_ERROR.value),
+    "503": (ErrorType.INFRASTRUCTURE_ERROR.value, ErrorSubtype.HTTP_5XX.value),
+    "502": (ErrorType.INFRASTRUCTURE_ERROR.value, ErrorSubtype.HTTP_5XX.value),
+    "500": (ErrorType.INFRASTRUCTURE_ERROR.value, ErrorSubtype.HTTP_5XX.value),
+    "409": (ErrorType.BUSINESS_LOGIC_ERROR.value, ErrorSubtype.CONFLICT.value),
+    "404": (ErrorType.APPLICATION_EXCEPTION.value, ErrorSubtype.HTTP_4XX.value),
+    "401": (ErrorType.SECURITY_ALERT.value, ErrorSubtype.AUTH_FAILURE.value),
+    "403": (ErrorType.SECURITY_ALERT.value, ErrorSubtype.PERMISSION_DENIED.value),
 }
 
 # Service name mappings for consistent naming
@@ -54,7 +67,7 @@ SERVICE_MAPPINGS: Dict[str, str] = {
     "mail": "mail-service",  # Not in enum, keeping as string
 }
 
-def normalize_classification(error_desc: str, service: str) -> Tuple[str, str, str]:
+def normalize_classification(error_desc: str, service: str) -> Tuple[ErrorType, ErrorSubtype, str]:
     """
     Normalize error classification using predefined mappings.
     Returns (error_type, error_sub_type, normalized_service)
@@ -62,13 +75,20 @@ def normalize_classification(error_desc: str, service: str) -> Tuple[str, str, s
     error_desc_lower = error_desc.lower()
     
     # Find matching error type using enum defaults
-    error_type = ErrorType.UNKNOWN_ERROR.value
-    error_sub_type = ErrorSubtype.UNKNOWN.value
+    error_type = ErrorType.UNKNOWN_ERROR
+    error_sub_type = ErrorSubtype.UNKNOWN
     
-    for keyword, (e_type, e_sub_type) in ERROR_TYPES.items():
+    for keyword, (e_type_str, e_sub_type_str) in ERROR_TYPES.items():
         if keyword in error_desc_lower:
-            error_type = e_type
-            error_sub_type = e_sub_type
+            # Convert string values back to enums
+            for et in ErrorType:
+                if et.value == e_type_str:
+                    error_type = et
+                    break
+            for est in ErrorSubtype:
+                if est.value == e_sub_type_str:
+                    error_sub_type = est
+                    break
             break
     
     # Normalize service name
@@ -212,14 +232,53 @@ def classify_log_with_retry(log_data: dict, max_retries: int = 3, agent: Optiona
             # Get the classification result
             result = response.content
             
-            # Add timestamp to the result
-            if timestamp and hasattr(result, 'timestamp'):
-                result.timestamp = timestamp
-            elif timestamp:
-                # If the result doesn't have timestamp field, create new instance
-                result_dict = result.dict()
-                result_dict['timestamp'] = timestamp
-                result = LogsClassifier(**result_dict)
+            # If result is a string, try to parse it as JSON or fallback
+            if isinstance(result, str):
+                try:
+                    # Try to parse as dict
+                    import json as _json
+                    result_dict = _json.loads(result)
+                    
+                    # Convert string values to proper enum types
+                    if "error_type" in result_dict and isinstance(result_dict["error_type"], str):
+                        # Find matching enum value
+                        for error_type_enum in ErrorType:
+                            if error_type_enum.value == result_dict["error_type"]:
+                                result_dict["error_type"] = error_type_enum
+                                break
+                        else:
+                            result_dict["error_type"] = ErrorType.UNKNOWN_ERROR
+                    
+                    if "error_sub_type" in result_dict and isinstance(result_dict["error_sub_type"], str):
+                        # Find matching enum value
+                        for error_sub_type_enum in ErrorSubtype:
+                            if error_sub_type_enum.value == result_dict["error_sub_type"]:
+                                result_dict["error_sub_type"] = error_sub_type_enum
+                                break
+                        else:
+                            result_dict["error_sub_type"] = ErrorSubtype.UNKNOWN
+                    
+                    # If severity_level is a string, normalize it
+                    if "severity_level" in result_dict and isinstance(result_dict["severity_level"], str):
+                        result_dict["severity_level"] = normalize_severity(result_dict["severity_level"])
+                    
+                    # Add timestamp if missing
+                    if timestamp:
+                        result_dict["timestamp"] = timestamp
+                    
+                    result = LogsClassifier(**result_dict)
+                except Exception as parse_exc:
+                    logging.warning(f"Could not parse LLM string result: {parse_exc}. Using fallback.")
+                    return FallbackClassification.create_fallback(log_data, timestamp)
+            else:
+                # Add timestamp to the result (for Pydantic model objects)
+                if timestamp and hasattr(result, 'timestamp'):
+                    result.timestamp = timestamp
+                elif timestamp:
+                    # If the result doesn't have timestamp field, create new instance
+                    result_dict = result.dict()
+                    result_dict['timestamp'] = timestamp
+                    result = LogsClassifier(**result_dict)
             
             # Apply normalization to ensure consistency
             error_type, error_sub_type, service = normalize_classification(
