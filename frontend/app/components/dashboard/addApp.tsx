@@ -1,0 +1,101 @@
+"use client";
+import { useState } from "react";
+
+type AddAppProps = {
+  onAppRegistered: (app: { id: number; appName: string; description: string }) => void;
+};
+
+export default function AddApp({ onAppRegistered }: AddAppProps) {
+  const [appName, setAppName] = useState("");
+  const [description, setDescription] = useState("");
+  const [logFile, setLogFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!appName || !description || !logFile) {
+      alert("Please fill all fields and upload a log file.");
+      return;
+    }
+
+    const newApp = {
+      id: Date.now(),
+      appName,
+      description,
+    };
+
+    try {
+      setLoading(true);
+      // TODO: send to backend `/api/apps` with formData
+      onAppRegistered(newApp);
+
+      setAppName("");
+      setDescription("");
+      setLogFile(null);
+    } catch (err) {
+      console.error(err);
+      alert("Error registering app.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8">
+      <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
+        Register Your App
+      </h2>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            App Name
+          </label>
+          <input
+            type="text"
+            value={appName}
+            onChange={(e) => setAppName(e.target.value)}
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter app name"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Description
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Brief description"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Log File
+          </label>
+          <input
+            type="file"
+            accept=".log,.txt"
+            onChange={(e) => setLogFile(e.target.files?.[0] || null)}
+            className="w-full text-sm text-gray-600"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+        >
+          {loading ? "Registering..." : "Register App"}
+        </button>
+      </form>
+    </div>
+  );
+}

@@ -3,7 +3,7 @@
     "service": "payment-service",
     "error_type": "Network Error",
     "error_sub_type": "Connection Refused",
-    "error_desc": "Database connection refused",
+    "error_desc": "Database connection failed",
     "severity_level": "High",
     "timestamp": "2025-07-30 08:00:08,567"
   },
@@ -17,9 +17,9 @@
   },
   {
     "service": "api-gateway",
-    "error_type": "Unknown",
-    "error_sub_type": "Unknown",
-    "error_desc": "Service Unavailable for POST /api/v1/payments",
+    "error_type": "Infrastructure Error",
+    "error_sub_type": "HTTP 5XX Error",
+    "error_desc": "503 Service Unavailable in api-gateway for POST /api/v1/payments",
     "severity_level": "High",
     "timestamp": "2025-07-30 08:00:08,789"
   },
@@ -35,7 +35,7 @@
     "service": "notification-service",
     "error_type": "Communication Error",
     "error_sub_type": "SMTP Error",
-    "error_desc": "Could not connect to SMTP host",
+    "error_desc": "Could not connect to SMTP host: smtp.gmail.com, port: 587",
     "severity_level": "Medium",
     "timestamp": "2025-07-30 08:00:11,679"
   },
@@ -43,8 +43,8 @@
     "service": "api-gateway",
     "error_type": "Business Logic Error",
     "error_sub_type": "Conflict",
-    "error_desc": "Conflict in PUT /api/v1/users/profile",
-    "severity_level": "Medium",
+    "error_desc": "PUT /api/v1/users/profile - 409 - Conflict",
+    "severity_level": "Low",
     "timestamp": "2025-07-30 08:02:28,123"
   },
   {
