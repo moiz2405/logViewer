@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 export default function Hero() {
     const router = useRouter()
     return (
-        <div className="min-h-screen flex items-center justify-center px-6 lg:px-8">
+        <div className="min-h-screen flex items-center px-2 ">
             <div className="max-w-4xl mx-auto text-center">
                 {/* Main heading */}
                 <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
@@ -30,9 +30,6 @@ export default function Hero() {
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
                         Register Your App
                     </button>
-                    {/* <button className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 px-8 rounded-lg transition-colors duration-200">
-                        View Demo
-                    </button> */}
                 </div>
                 
                 {/* Feature highlights */}

@@ -4,6 +4,7 @@ type App = {
   id: number;
   appName: string;
   description: string;
+  logUrl: string;
 };
 
 type RegisteredAppsProps = {
@@ -29,9 +30,15 @@ export default function Dashboard({ apps }: RegisteredAppsProps) {
               <h4 className="text-lg font-semibold text-gray-800 mb-2">
                 {app.appName}
               </h4>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                {app.description}
-              </p>
+              <p className="text-gray-600 text-sm mb-3">{app.description}</p>
+              <a
+                href={app.logUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 text-sm font-medium hover:underline"
+              >
+                View Logs
+              </a>
             </div>
           ))}
         </div>

@@ -2,19 +2,24 @@
 import { useState } from "react";
 
 type AddAppProps = {
-  onAppRegistered: (app: { id: number; appName: string; description: string }) => void;
+  onAppRegistered: (app: {
+    id: number;
+    appName: string;
+    description: string;
+    logUrl: string;
+  }) => void;
 };
 
 export default function AddApp({ onAppRegistered }: AddAppProps) {
   const [appName, setAppName] = useState("");
   const [description, setDescription] = useState("");
-  const [logFile, setLogFile] = useState<File | null>(null);
+  const [logUrl, setLogUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!appName || !description || !logFile) {
-      alert("Please fill all fields and upload a log file.");
+    if (!appName || !description || !logUrl) {
+      alert("Please fill all fields including the log URL.");
       return;
     }
 
@@ -22,16 +27,17 @@ export default function AddApp({ onAppRegistered }: AddAppProps) {
       id: Date.now(),
       appName,
       description,
+      logUrl,
     };
 
     try {
       setLoading(true);
-      // TODO: send to backend `/api/apps` with formData
+      // TODO: send to backend `/api/apps` with JSON
       onAppRegistered(newApp);
 
       setAppName("");
       setDescription("");
-      setLogFile(null);
+      setLogUrl("");
     } catch (err) {
       console.error(err);
       alert("Error registering app.");
@@ -77,13 +83,14 @@ export default function AddApp({ onAppRegistered }: AddAppProps) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Log File
+            Log URL
           </label>
           <input
-            type="file"
-            accept=".log,.txt"
-            onChange={(e) => setLogFile(e.target.files?.[0] || null)}
-            className="w-full text-sm text-gray-600"
+            type="url"
+            value={logUrl}
+            onChange={(e) => setLogUrl(e.target.value)}
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="https://example.com/app.log"
             required
           />
         </div>

@@ -5,19 +5,29 @@ import AddApp from "../components/dashboard/addApp";
 import RegisteredApps from "../components/dashboard/dashboard";
 
 export default function Page() {
-  const [apps, setApps] = useState<{ id: number; appName: string; description: string }[]>([]);
+  const [apps, setApps] = useState<
+    { id: number; appName: string; description: string }[]
+  >([]);
 
-  const handleAppRegistered = (app: { id: number; appName: string; description: string }) => {
+  const handleAppRegistered = (app: {
+    id: number;
+    appName: string;
+    description: string;
+  }) => {
     setApps((prev) => [app, ...prev]);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-6 lg:px-8">
-      {/* Pass callback to AddApp so it can push new apps */}
-      <AddApp onAppRegistered={handleAppRegistered} />
+    <div className="min-h-screen bg-gray-50 pt-24 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl w-full mx-auto">
+        {/* AddApp form */}
+        <AddApp onAppRegistered={handleAppRegistered} />
 
-      {/* Pass registered apps down to dashboard */}
-      <RegisteredApps apps={apps} />
+        {/* Registered Apps */}
+        <div className="mt-12">
+          <RegisteredApps apps={apps} />
+        </div>
+      </div>
     </div>
   );
 }
