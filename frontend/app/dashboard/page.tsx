@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import AddApp from "../components/dashboard/addApp";
-import RegisteredApps from "../components/dashboard/dashboard";
+import AddApp from "../../components/dashboard/addApp";
+import RegisteredApps from "../../components/dashboard/dashboard";
 
 export default function Page() {
   const [apps, setApps] = useState<
@@ -18,8 +18,8 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl w-full mx-auto">
+    <div className="min-h-screen px-4 pt-24 bg-zinc-900 text-zinc-100 sm:px-6 lg:px-8">
+      <div className="w-full max-w-4xl mx-auto">
         {/* AddApp form */}
         <AddApp onAppRegistered={handleAppRegistered} />
 

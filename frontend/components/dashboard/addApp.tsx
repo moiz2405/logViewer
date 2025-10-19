@@ -47,14 +47,14 @@ export default function AddApp({ onAppRegistered }: AddAppProps) {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8">
-      <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
+    <div className="w-full max-w-xl mx-auto bg-zinc-900 shadow-lg rounded-2xl p-8">
+      <h2 className="text-3xl font-bold text-center text-zinc-100 mb-6">
         Register Your App
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
             App Name
           </label>
           <input
@@ -68,7 +68,7 @@ export default function AddApp({ onAppRegistered }: AddAppProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
             Description
           </label>
           <textarea
@@ -82,7 +82,7 @@ export default function AddApp({ onAppRegistered }: AddAppProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
             Log URL
           </label>
           <input
@@ -98,7 +98,7 @@ export default function AddApp({ onAppRegistered }: AddAppProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+          className="w-full bg-blue-700 text-zinc-100 py-2 rounded-lg hover:bg-blue-800 transition disabled:opacity-50"
         >
           {loading ? "Registering..." : "Register App"}
         </button>

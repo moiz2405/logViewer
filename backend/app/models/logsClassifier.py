@@ -7,7 +7,7 @@ from agno.agent import Agent
 from agno.models.groq import Groq
 
 # from backend.app.types.classifierTypes import SeverityLevel  # Types already defined elsewhere
-from backend.app.types.classifierTypes import SeverityLevel, ErrorType, ErrorSubtype, Service
+from app.types.classifierTypes import SeverityLevel, ErrorType, ErrorSubtype, Service
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
