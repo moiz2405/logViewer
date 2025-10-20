@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  sentry:
+    build: ./sentry
+    container_name: sentry-backend
+    ports:
+      - "8001:8001"
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
+  myapp:
+    build: ./myApp
+    container_name: myapp-backend
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1

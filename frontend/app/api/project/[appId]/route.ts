@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   req: Request,
-  { params }: { params: { appId: string } }
+  { params }: { params: Promise<{ appId: string }> }
 ) {
-  const { appId } = params;
+  const { appId } = await params;
   if (!appId) {
     return NextResponse.json({ error: 'Missing appId' }, { status: 400 });
   }

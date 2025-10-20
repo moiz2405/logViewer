@@ -2,7 +2,6 @@
 
 import { useSession } from "next-auth/react"
 import React, { useState } from "react"
-import { IconCirclePlusFilled } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import {
   Field,

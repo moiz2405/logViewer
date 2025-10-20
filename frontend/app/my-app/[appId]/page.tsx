@@ -3,8 +3,8 @@ import { ArrowLeftIcon } from "lucide-react";
 import React from "react";
 import { AppScreen } from "@/components/appscreen/AppScreen";
 
-export default async function AppDetailPage({ params }: { params: { appId: string } }) {
-  const { appId } = params;
+export default async function AppDetailPage({ params }: { params: Promise<{ appId: string }> }) {
+  const { appId } = await params;
   return (
     <div className="flex flex-col min-h-[60vh] items-stretch justify-center">
       <div className="flex w-full max-w-2xl mx-2 my-2">

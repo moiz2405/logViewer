@@ -1,3 +1,5 @@
 .env.local
-\venv
+/sentry/venv
+/myApp/venv
+venv
 sentry-key.pem

@@ -7,7 +7,7 @@ import {
   IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react"
-import { signIn, signOut, useSession } from "next-auth/react"
+import {signOut, useSession } from "next-auth/react"
 import React from "react"
 
 import {

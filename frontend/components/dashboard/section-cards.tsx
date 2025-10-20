@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { IconFolderCode } from "@tabler/icons-react"
-import { ArrowUpRightIcon } from "lucide-react"
 import {
   Empty,
   EmptyContent,
@@ -32,8 +31,11 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { usePathname, useRouter } from "next/navigation"
 
-export function SectionCards({ onAddApp }: { onAddApp?: () => void }) {
+export function SectionCards() {
+  const router = useRouter()
+  const pathname = usePathname()
   const { data: session } = useSession()
   const [apps, setApps] = useState([])
   const [loading, setLoading] = useState(true)
@@ -108,7 +110,8 @@ export function SectionCards({ onAddApp }: { onAddApp?: () => void }) {
             </EmptyHeader>
             <EmptyContent>
               <div className="flex gap-2">
-                <Button onClick={onAddApp}>Add App</Button>
+                <Button 
+                 onClick={() => router.push("/register")}>Add App</Button>
               </div>
             </EmptyContent>
           </Empty>
@@ -121,6 +124,13 @@ export function SectionCards({ onAddApp }: { onAddApp?: () => void }) {
             className="relative block group focus:outline-none"
             tabIndex={0}
             aria-label={`View details for ${app.name}`}
+            onClick={e => {
+              // Prevent navigation if the delete dialog is open
+              if (confirmId === app.id) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
           >
             <Card className="@container/card relative pointer-events-auto">
               <CardHeader>
@@ -165,7 +175,7 @@ export function SectionCards({ onAddApp }: { onAddApp?: () => void }) {
                     className="absolute z-40 p-2 transition-opacity rounded-full shadow-lg opacity-0 top-3 right-3 group-hover:opacity-100 bg-zinc-900/80 text-zinc-400 hover:text-red-500"
                     title="Delete app"
                     disabled={deletingId === app.id}
-                    onClick={e => { e.stopPropagation(); setConfirmId(app.id); }}
+                    onClick={e => { e.stopPropagation(); e.preventDefault(); setConfirmId(app.id); }}
                   >
                     <IconTrash className="size-5" />
                   </button>
