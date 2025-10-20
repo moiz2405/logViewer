@@ -1,0 +1,178 @@
+{
+  "1": {
+    "timestamp": "2025-10-20 10:28:01,301",
+    "service": "InventoryService",
+    "error_type": "Database Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:01,301 [INFO] [InventoryService]: Stock level updated for Keyboard in NYC-1",
+    "line_number": 1
+  },
+  "2": {
+    "timestamp": "2025-10-20 10:28:01,301",
+    "service": "InventoryService",
+    "error_type": "Network Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:01,301 [INFO] [InventoryService]: Inventory reconciliation completed for Peripherals category",
+    "line_number": 2
+  },
+  "3": {
+    "timestamp": "2025-10-20 10:28:02,613",
+    "service": "ApiService",
+    "error_type": "Communication Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:02,613 [INFO] [ApiService]: API POST /orders - Request 22390 handled successfully from 192.168.20.87",
+    "line_number": 3
+  },
+  "4": {
+    "timestamp": "2025-10-20 10:28:02,614",
+    "service": "ApiService",
+    "error_type": "Business Logic Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:02,614 [WARNING] [ApiService]: Slow response detected: 369ms for request 22390",
+    "line_number": 4
+  },
+  "5": {
+    "timestamp": "2025-10-20 10:28:02,848",
+    "service": "InventoryService",
+    "error_type": "Communication Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:02,848 [INFO] [InventoryService]: Stock removed: 39 units of Phone due to transfer",
+    "line_number": 5
+  },
+  "6": {
+    "timestamp": "2025-10-20 10:28:05,066",
+    "service": "NotificationService",
+    "error_type": "Database Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:05,066 [INFO] [NotificationService]: Preparing webhook notification NOTIF-34463 for user 7748",
+    "line_number": 6
+  },
+  "7": {
+    "timestamp": "2025-10-20 10:28:05,067",
+    "service": "NotificationService",
+    "error_type": "Business Logic Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:05,067 [INFO] [NotificationService]: Sending webhook notification for event: promotional",
+    "line_number": 7
+  },
+  "8": {
+    "timestamp": "2025-10-20 10:28:05,067",
+    "service": "NotificationService",
+    "error_type": "Network Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:05,067 [INFO] [NotificationService]: Webhook notification NOTIF-34463 sent to https://api.external-10.com/webhook",
+    "line_number": 8
+  },
+  "9": {
+    "timestamp": "2025-10-20 10:28:05,599",
+    "service": "ApiService",
+    "error_type": "Payment Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:05,599 [INFO] [ApiService]: API PUT /orders - Request 20779 handled successfully from 192.168.148.49",
+    "line_number": 9
+  },
+  "10": {
+    "timestamp": "2025-10-20 10:28:06,130",
+    "service": "NotificationService",
+    "error_type": "Business Logic Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:06,130 [INFO] [NotificationService]: Preparing webhook notification NOTIF-15281 for user 8339",
+    "line_number": 10
+  },
+  "11": {
+    "timestamp": "2025-10-20 10:28:06,131",
+    "service": "NotificationService",
+    "error_type": "Network Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:06,131 [INFO] [NotificationService]: Sending webhook notification for event: system update",
+    "line_number": 11
+  },
+  "12": {
+    "timestamp": "2025-10-20 10:28:06,131",
+    "service": "NotificationService",
+    "error_type": "Database Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:06,131 [INFO] [NotificationService]: Webhook notification NOTIF-15281 sent to https://api.external-77.com/webhook",
+    "line_number": 12
+  },
+  "13": {
+    "timestamp": "2025-10-20 10:28:07,055",
+    "service": "AuthService",
+    "error_type": "Database Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:07,055 [INFO] [AuthService]: User user_649 (ID: 6621) requested two_factor_auth from 192.168.144.23",
+    "line_number": 13
+  },
+  "14": {
+    "timestamp": "2025-10-20 10:28:07,055",
+    "service": "AuthService",
+    "error_type": "Business Logic Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:07,055 [INFO] [AuthService]: 2FA verification successful for user user_649",
+    "line_number": 14
+  },
+  "15": {
+    "timestamp": "2025-10-20 10:28:07,055",
+    "service": "InventoryService",
+    "error_type": "Communication Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:07,055 [INFO] [InventoryService]: Stock added: 42 units of Docking Station (SKU: DS-8910) to NYC-1",
+    "line_number": 15
+  },
+  "16": {
+    "timestamp": "2025-10-20 10:28:07,117",
+    "service": "ApiService",
+    "error_type": "Payment Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:07,117 [INFO] [ApiService]: API PUT /orders - Request 82133 handled successfully from 192.168.244.86",
+    "line_number": 16
+  },
+  "17": {
+    "timestamp": "2025-10-20 10:28:09,784",
+    "service": "ApiService",
+    "error_type": "Payment Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:09,784 [WARNING] [ApiService]: API POST /orders - Request 59265 failed with 401",
+    "line_number": 17
+  },
+  "18": {
+    "timestamp": "2025-10-20 10:28:09,784",
+    "service": "ApiService",
+    "error_type": "Business Logic Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:09,784 [WARNING] [ApiService]: Authentication failed for request 59265 from 192.168.191.19",
+    "line_number": 18
+  },
+  "19": {
+    "timestamp": "2025-10-20 10:28:09,799",
+    "service": "NotificationService",
+    "error_type": "Network Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:09,799 [ERROR] [NotificationService]: Push notification NOTIF-46092 delivery failed",
+    "line_number": 19
+  },
+  "20": {
+    "timestamp": "2025-10-20 10:28:09,800",
+    "service": "NotificationService",
+    "error_type": "Database Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:09,800 [WARNING] [NotificationService]: Push notification failed: device token expired for user 3659",
+    "line_number": 20
+  },
+  "21": {
+    "timestamp": "2025-10-20 10:28:09,800",
+    "service": "NotificationService",
+    "error_type": "Communication Error",
+    "severity_level": "Low",
+    "line": "2025-10-20 10:28:09,800 [INFO] [NotificationService]: Removing invalid device token for user 3659",
+    "line_number": 21
+  },
+  "22": {
+    "timestamp": "2025-10-20 10:28:10,346",
+    "service": "PaymentService",
+    "error_type": "Payment Error",
+    "severity_level": "High",
+    "line": "2025-10-20 10:28:10,346 [ERROR] [PaymentService]: Payment processing error for transaction TXN-734477",
+    "line_number": 22
+  }
+}

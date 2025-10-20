@@ -11,7 +11,7 @@ from enum import Enum
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from app.types.classifierTypes import SeverityLevel, ErrorType, ErrorSubtype, Service
+from ..log_types.classifierTypes import SeverityLevel, ErrorType, ErrorSubtype, Service
 
 class ServiceStatus(str, Enum):
     """Service health status"""

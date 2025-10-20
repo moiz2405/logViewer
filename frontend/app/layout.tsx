@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/common/navbar";
+import ClientNavbarWrapper from "../components/common/ClientNavbarWrapper";
+import { SessionProvider } from "next-auth/react";
+import { Toaster } from "sonner";
+import DefaultLayout from "@/components/common/DefaultLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,12 +28,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900 text-zinc-100 min-h-screen`}
-      >
-        <Navbar />
-        {children}
-      </body>
+      <SessionProvider>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900 text-zinc-100 min-h-screen`}
+        >
+          {/* <ClientNavbarWrapper /> */}
+          <Toaster richColors position="top-right" theme="dark" />
+          <DefaultLayout>{children}</DefaultLayout>
+        </body>
+      </SessionProvider>
     </html>
   );
 }

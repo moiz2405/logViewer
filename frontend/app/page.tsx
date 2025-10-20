@@ -1,8 +1,8 @@
-import Hero from "../components/home/hero"
+"use client";
+
+import { MainContent } from "@/components/home/MainContent"
 export default function Home() {
   return (
-    <div>
-      <Hero></Hero>
-    </div>
-  );
+        <MainContent />
+  )
 }

@@ -59,6 +59,11 @@ def process_logs(input_path: str, output_path: str, source_file: str = None) -> 
     seen_compact_errors = set()
     count = 1
     
+    # Ensure output directory exists
+    output_dir = os.path.dirname(output_path)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+    
     # Use source_file parameter or extract from input_path
     if source_file is None:
         source_file = input_path
