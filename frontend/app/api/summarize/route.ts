@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || "http://localhost:8001";
+const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL
 
 export async function POST(req: Request) {
   try {
@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       idle_gap: idleGap.toString(),
     });
     const backendUrl = `${BACKEND_BASE_URL}/continuous-summary/${appId}?${params.toString()}`;
+    console.log(backendUrl)
     const backendRes = await fetch(backendUrl);
     // Stream the backend response directly to the client
     const readable = backendRes.body;

@@ -3,3 +3,5 @@
 /myApp/venv
 venv
 sentry-key.pem
+connect_ec2.ps1
+connect_ec2.sh

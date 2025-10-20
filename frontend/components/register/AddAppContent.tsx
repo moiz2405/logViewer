@@ -33,7 +33,7 @@ export function AddAppContent() {
   const [error, setError] = useState("")
 
   const isUrlValid =
-    url.trim().startsWith("http://localhost") || url.trim().startsWith("https://")
+    url.trim().startsWith("http://") || url.trim().startsWith("https://")
   const isFormValid = name.trim() !== "" && url.trim() !== "" && isUrlValid
 
   async function handleSubmit(e: React.FormEvent) {
