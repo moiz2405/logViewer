@@ -11,7 +11,6 @@ from threading import Thread, Event
 
 # Import log processor
 from backend.app.models.smart_log_processor import (
-    process_and_summarize_logs,
     process_and_summarize_stream,
 )
 

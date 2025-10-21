@@ -42,7 +42,7 @@ class PaymentService:
             currency = random.choice(currencies)
             
             # Good logs
-            if log_count % 10 > self.bad_log_ratio:
+            if self.bad_log_ratio == 0:
                 logger.info(f"Payment initiated: {txn_id} for order {order_id} - {currency} {amount}")
                 
                 if payment_method in ["credit_card", "debit_card"]:
@@ -67,8 +67,8 @@ class PaymentService:
                     logger.info(f"Receipt generated for transaction {txn_id}")
                     logger.debug(f"Receipt delivery: Email to user {user_id}")
             
-            # Bad logs
-            else:
+            elif log_count % 10 < self.bad_log_ratio:
+                # Bad logs
                 error_types = ["payment_declined", "processing_error", "timeout", "fraud_check", "system_error"]
                 error_type = random.choice(error_types)
                 
@@ -101,4 +101,30 @@ class PaymentService:
                     logger.error(f"Database connection failed during payment processing")
                     logger.debug(f"Stack trace: ConnectionError in ProcessPayment() method")
             
-            await asyncio.sleep(random.uniform(1.0, 3.5))
+            else:
+                # Good logs
+                logger.info(f"Payment initiated: {txn_id} for order {order_id} - {currency} {amount}")
+                
+                if payment_method in ["credit_card", "debit_card"]:
+                    card_type = random.choice(card_types)
+                    last_four = f"{random.randint(1000, 9999)}"
+                    logger.info(f"Processing {card_type} payment ending in {last_four} for {txn_id}")
+                    logger.debug(f"Card verification successful for transaction {txn_id}")
+                
+                elif payment_method in ["paypal", "apple_pay", "google_pay"]:
+                    logger.info(f"Processing {payment_method.replace('_', ' ').title()} payment for {txn_id}")
+                    logger.debug(f"External payment provider authentication successful")
+                
+                elif payment_method == "bank_transfer":
+                    logger.info(f"Bank transfer initiated for {txn_id}")
+                    logger.debug(f"ACH transfer details: {random.randint(100000, 999999)}")
+                
+                logger.info(f"Payment {txn_id} successfully processed for user {user_id}")
+                logger.debug(f"Transaction time: {random.randint(200, 1500)}ms")
+                
+                # Sometimes add receipt info
+                if random.random() < 0.3:
+                    logger.info(f"Receipt generated for transaction {txn_id}")
+                    logger.debug(f"Receipt delivery: Email to user {user_id}")
+            
+            await asyncio.sleep(random.uniform(2, 5))

@@ -34,8 +34,8 @@ class AuthService:
             username = f"user_{random.randint(100, 999)}"
             client_ip = f"192.168.{random.randint(1, 255)}.{random.randint(1, 255)}"
             
-            # Good logs
-            if log_count % 10 > self.bad_log_ratio:
+            if self.bad_log_ratio == 0:
+                # Always good logs
                 actions = ["login", "logout", "password_change", "token_refresh", "two_factor_auth", "profile_update"]
                 action = random.choice(actions)
                 
@@ -57,8 +57,8 @@ class AuthService:
                     logger.info(f"Password updated for user {username}")
                     logger.debug(f"Password policy check passed for user {user_id}")
             
-            # Bad logs
-            else:
+            elif log_count % 10 < self.bad_log_ratio:
+                # Bad logs
                 error_types = ["auth_failure", "token_expired", "suspicious_activity", "rate_limit", "server_error"]
                 error_type = random.choice(error_types)
                 
@@ -87,4 +87,27 @@ class AuthService:
                     logger.error(f"LDAP connection failure during authentication for user {username}")
                     logger.debug(f"Connection timeout after 30s to LDAP server")
             
-            await asyncio.sleep(random.uniform(1.0, 3.0))
+            else:
+                # Good logs
+                actions = ["login", "logout", "password_change", "token_refresh", "two_factor_auth", "profile_update"]
+                action = random.choice(actions)
+                
+                logger.info(f"User {username} (ID: {user_id}) requested {action} from {client_ip}")
+                
+                if action == "login":
+                    logger.info(f"Successful login for user {username} (ID: {user_id})")
+                    logger.debug(f"Auth token issued for user {user_id}, valid for 24 hours")
+                    if random.random() < 0.2:
+                        logger.info(f"First login from new device for user {username}")
+                elif action == "logout":
+                    logger.info(f"User {username} logged out successfully")
+                elif action == "token_refresh":
+                    logger.info(f"Token refreshed for user {username}")
+                    logger.debug(f"New token issued with extended expiry")
+                elif action == "two_factor_auth":
+                    logger.info(f"2FA verification successful for user {username}")
+                elif action == "password_change":
+                    logger.info(f"Password updated for user {username}")
+                    logger.debug(f"Password policy check passed for user {user_id}")
+            
+            await asyncio.sleep(random.uniform(2, 5))

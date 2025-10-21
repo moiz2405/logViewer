@@ -38,21 +38,20 @@ class ApiService:
             method = random.choice(http_methods)
             client_ip = f"192.168.{random.randint(1, 255)}.{random.randint(1, 255)}"
             response_time = random.randint(10, 400)
-            
+
             # Good logs
-            if log_count % 10 > self.bad_log_ratio:
+            if self.bad_log_ratio == 0:
+                # Always good logs
                 logger.info(f"API {method} /{endpoint} - Request {req_id} handled successfully from {client_ip}")
                 logger.debug(f"API response time: {response_time}ms for request {req_id}")
                 if random.random() < 0.3:
                     logger.info(f"Cache hit for API request {req_id} on /{endpoint}")
                 if response_time > 300:
                     logger.warning(f"Slow response detected: {response_time}ms for request {req_id}")
-            
-            # Bad logs
-            else:
+            elif log_count % 10 < self.bad_log_ratio:
+                # Bad logs
                 status_codes = [400, 401, 403, 404, 500, 502, 503]
                 error_code = random.choice(status_codes)
-                
                 if error_code < 500:
                     logger.warning(f"API {method} /{endpoint} - Request {req_id} failed with {error_code}")
                     if error_code == 401:
@@ -71,5 +70,12 @@ class ApiService:
                     elif error_code == 503:
                         logger.error(f"Service Unavailable - Database connection timeout for request {req_id}")
                         logger.warning(f"Database connection pool exhausted during request {req_id}")
-            
-            await asyncio.sleep(random.uniform(0.5, 2))
+            else:
+                # Good logs
+                logger.info(f"API {method} /{endpoint} - Request {req_id} handled successfully from {client_ip}")
+                logger.debug(f"API response time: {response_time}ms for request {req_id}")
+                if random.random() < 0.3:
+                    logger.info(f"Cache hit for API request {req_id} on /{endpoint}")
+                if response_time > 300:
+                    logger.warning(f"Slow response detected: {response_time}ms for request {req_id}")
+            await asyncio.sleep(random.uniform(2, 5))

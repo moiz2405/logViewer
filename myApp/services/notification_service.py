@@ -39,8 +39,8 @@ class NotificationService:
             notification_type = random.choice(notification_types)
             event = random.choice(notification_events)
             
-            # Good logs
-            if log_count % 10 > self.bad_log_ratio:
+            if self.bad_log_ratio == 0:
+                # Always good logs
                 # Prepare notification
                 logger.info(f"Preparing {notification_type} notification {notification_id} for user {user_id}")
                 logger.debug(f"Notification template loaded: {event.replace('_', '-')}.template")
@@ -79,8 +79,8 @@ class NotificationService:
                     logger.info(f"Webhook notification {notification_id} sent to {target}")
                     logger.debug(f"Webhook payload size: {random.randint(0, 10)}KB")
             
-            # Bad logs
-            else:
+            elif log_count % 10 < self.bad_log_ratio:
+                # Bad logs
                 error_types = ["delivery_failed", "rate_limit", "template_error", "user_not_found", "service_down"]
                 error_type = random.choice(error_types)
                 
@@ -124,4 +124,44 @@ class NotificationService:
                         logger.warning(f"Circuit breaker triggered for notification service")
                         logger.debug(f"Attempting service restart in {random.randint(30, 300)} seconds")
             
-            await asyncio.sleep(random.uniform(1.0, 3.0))
+            else:
+                # Good logs
+                # Prepare notification
+                logger.info(f"Preparing {notification_type} notification {notification_id} for user {user_id}")
+                logger.debug(f"Notification template loaded: {event.replace('_', '-')}.template")
+                
+                # Send notification
+                logger.info(f"Sending {notification_type} notification for event: {event.replace('_', ' ')}")
+                
+                if notification_type == "email":
+                    delivery_time = random.randint(100, 600)
+                    logger.info(f"Email notification {notification_id} sent to user {user_id}")
+                    logger.debug(f"Email delivery time: {delivery_time}ms")
+                    
+                    if random.random() < 0.2:
+                        logger.info(f"Email opened by user {user_id}")
+                
+                elif notification_type == "sms":
+                    logger.info(f"SMS notification {notification_id} sent to user {user_id}")
+                    logger.debug(f"SMS provider: {'Twilio' if random.random() < 0.7 else 'Nexmo'}")
+                
+                elif notification_type == "push":
+                    platforms = ["iOS", "Android", "Web"]
+                    platform = random.choice(platforms)
+                    logger.info(f"Push notification {notification_id} sent to user {user_id} on {platform}")
+                    
+                    if random.random() < 0.3:
+                        logger.info(f"Push notification clicked by user {user_id}")
+                
+                elif notification_type == "in_app":
+                    logger.info(f"In-app notification {notification_id} delivered to user {user_id}")
+                    
+                    if random.random() < 0.4:
+                        logger.info(f"In-app notification viewed by user {user_id}")
+                
+                elif notification_type == "webhook":
+                    target = f"https://api.external-{random.randint(1, 99)}.com/webhook"
+                    logger.info(f"Webhook notification {notification_id} sent to {target}")
+                    logger.debug(f"Webhook payload size: {random.randint(0, 10)}KB")
+            
+            await asyncio.sleep(random.uniform(2, 5))

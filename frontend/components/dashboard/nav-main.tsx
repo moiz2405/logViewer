@@ -18,7 +18,7 @@ export function NavMain() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-6 px-0 pb-2 mt-2 border shadow-xl rounded-2xl backdrop-blur-md border-zinc-800/60 bg-gradient-to-b from-zinc-900/80 to-zinc-800/60">
+      <SidebarGroupContent className="flex flex-col gap-6 px-0 pb-2 mt-2 border shadow-xl rounded-2xl backdrop-blur-md border-zinc-800/60 bg-[oklch(0.205_0_0)]">
         <div className="px-6 pt-4 pb-2">
           <h2 className="text-xl font-bold tracking-tight text-white/90 drop-shadow-sm">
             Manage your apps

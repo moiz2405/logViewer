@@ -47,8 +47,8 @@ class InventoryService:
             qty = random.randint(1, 50)
             warehouse = random.choice(warehouses)
             
-            # Good logs
-            if log_count % 10 > self.bad_log_ratio:
+            if self.bad_log_ratio == 0:
+                # Always good logs
                 actions = ["add", "remove", "update", "check", "transfer", "restock"]
                 action = random.choice(actions)
                 
@@ -80,8 +80,8 @@ class InventoryService:
                     logger.info(f"Restock order placed for {item['name']}: {qty} units")
                     logger.debug(f"Expected delivery in {random.randint(1, 7)} days")
             
-            # Bad logs
-            else:
+            elif log_count % 10 < self.bad_log_ratio:
+                # Bad logs
                 error_types = ["sync_failed", "low_stock", "data_error", "barcode_scan_failed", "system_error"]
                 error_type = random.choice(error_types)
                 
@@ -111,4 +111,37 @@ class InventoryService:
                     logger.error(f"Failed to update stock levels for {item['category']} category")
                     logger.debug(f"Stack trace: NullReferenceException in UpdateStock() method")
             
-            await asyncio.sleep(random.uniform(1.5, 4.0))
+            else:
+                # Good logs
+                actions = ["add", "remove", "update", "check", "transfer", "restock"]
+                action = random.choice(actions)
+                
+                if action == "add":
+                    logger.info(f"Stock added: {qty} units of {item['name']} (SKU: {item['sku']}) to {warehouse}")
+                    logger.debug(f"Inventory transaction ID: INV-{random.randint(10000, 99999)}")
+                
+                elif action == "remove":
+                    remove_reason = random.choice(["sale", "damage", "return", "transfer"])
+                    logger.info(f"Stock removed: {qty} units of {item['name']} due to {remove_reason}")
+                    logger.debug(f"Current stock level: {random.randint(50, 200)} units")
+                
+                elif action == "update":
+                    logger.info(f"Stock level updated for {item['name']} in {warehouse}")
+                    logger.info(f"Inventory reconciliation completed for {item['category']} category")
+                
+                elif action == "check":
+                    available = random.randint(20, 100)
+                    logger.info(f"Inventory check OK for {item['name']}, available: {available} units")
+                    if available < 30:
+                        logger.warning(f"Low stock alert for {item['name']} (SKU: {item['sku']}): {available} units")
+                
+                elif action == "transfer":
+                    dest_warehouse = random.choice([w for w in warehouses if w != warehouse])
+                    logger.info(f"Inventory transfer: {qty} units of {item['name']} from {warehouse} to {dest_warehouse}")
+                    logger.debug(f"Transfer shipment ID: TR-{random.randint(1000, 9999)}")
+                
+                elif action == "restock":
+                    logger.info(f"Restock order placed for {item['name']}: {qty} units")
+                    logger.debug(f"Expected delivery in {random.randint(1, 7)} days")
+            
+            await asyncio.sleep(random.uniform(2, 5))
