@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentry-logger"
+version = "0.1.0"
+description = "Push logs from your Python/FastAPI app to the Sentry dashboard"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Sentry" }]
+
+[project.scripts]
+sentry-logger = "sentry_logger.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sentry_logger*"]

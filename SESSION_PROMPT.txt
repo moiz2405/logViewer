@@ -1,0 +1,8 @@
+Continue this project from `docs/working-notes.md`.
+
+Instructions:
+1. Read that file first.
+2. Validate current repo state and summarize what is already implemented.
+3. Execute the listed "Next Steps" in order unless blocked.
+4. If blocked, state the blocker and propose the fastest workaround.
+5. Keep changes minimal, concrete, and production-oriented.
