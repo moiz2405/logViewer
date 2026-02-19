@@ -5,3 +5,6 @@ venv
 sentry-key.pem
 connect_ec2.ps1
 connect_ec2.sh
+__pycache__/
+*.pyc
+*.pyo
