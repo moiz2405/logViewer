@@ -48,15 +48,14 @@ git push origin main
 5. Add environment variables:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbG...
 GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=GOCSPX-xxxxx
 NEXTAUTH_SECRET=<paste generated secret>
 NEXTAUTH_URL=https://logsentry.vercel.app
 NEXT_PUBLIC_BACKEND_URL=https://api.logsentry.io
 ```
+
+> **No Supabase creds!** Backend handles database.
 
 6. Click **Deploy**
 
@@ -75,14 +74,13 @@ Visit: `https://logsentry.vercel.app`
 
 | Variable | Get From |
 |----------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase dashboard |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase dashboard → API |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase dashboard → API (secret) |
 | `GOOGLE_CLIENT_ID` | Google Cloud Console |
 | `GOOGLE_CLIENT_SECRET` | Google Cloud Console |
 | `NEXTAUTH_SECRET` | Generate with command above |
 | `NEXTAUTH_URL` | `https://logsentry.vercel.app` |
 | `NEXT_PUBLIC_BACKEND_URL` | `https://api.logsentry.io` |
+
+> **Supabase credentials stay in backend only!** ✅
 
 ---
 
