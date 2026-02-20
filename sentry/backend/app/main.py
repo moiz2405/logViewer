@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, Header
+from fastapi import FastAPI, Depends, HTTPException, Header, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 import json
@@ -13,15 +14,35 @@ from typing import List, Optional
 from backend.app.models.smart_log_processor import process_and_summarize_stream
 from backend.app.core.api_key import (
     complete_device_session,
+    generate_api_key,
     get_alert_recipient_emails,
     get_device_session,
     mark_device_session_expired,
     resolve_api_key_to_app_id,
     start_device_session,
     validate_sdk_schema,
+    _get_supabase,
 )
 
 app = FastAPI(title="Smart Log Processor API")
+
+# CORS — allow frontend origins
+ALLOWED_ORIGINS = [
+    o.strip()
+    for o in os.environ.get(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:3000,https://logsentry.vercel.app",
+    ).split(",")
+    if o.strip()
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 RISK_ALERT_WEBHOOK_URL = os.environ.get("RISK_ALERT_WEBHOOK_URL", "").strip()
 NOTIFICATION_COOLDOWN_SECONDS = int(os.environ.get("NOTIFICATION_COOLDOWN_SECONDS", "300"))
@@ -55,6 +76,12 @@ class IngestRequest(BaseModel):
     logs: List[str]
 
 
+class CreateAppRequest(BaseModel):
+    user_id: str
+    name: str
+    description: Optional[str] = None
+
+
 class DeviceStartRequest(BaseModel):
     app_name: str
     description: Optional[str] = None
@@ -65,6 +92,112 @@ class DeviceCompleteRequest(BaseModel):
     device_code: str
     user_id: str
     app_name: Optional[str] = None
+
+
+# =========================================
+# Health
+# =========================================
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
+
+# =========================================
+# App CRUD
+# =========================================
+
+@app.get("/apps")
+async def list_apps(user_id: str = Query(...)):
+    """List all apps for a user."""
+    client = _get_supabase()
+    if not client:
+        raise HTTPException(status_code=503, detail="Database not configured")
+    try:
+        result = (
+            client.table("apps")
+            .select("id,user_id,name,description,api_key,created_at")
+            .eq("user_id", user_id)
+            .order("created_at", desc=True)
+            .execute()
+        )
+        return result.data or []
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/apps/{app_id}")
+async def get_app(app_id: str):
+    """Get a single app by ID."""
+    client = _get_supabase()
+    if not client:
+        raise HTTPException(status_code=503, detail="Database not configured")
+    try:
+        result = (
+            client.table("apps")
+            .select("id,user_id,name,description,api_key,created_at")
+            .eq("id", app_id)
+            .single()
+            .execute()
+        )
+        if not result.data:
+            raise HTTPException(status_code=404, detail="App not found")
+        return result.data
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail="App not found")
+
+
+@app.post("/apps")
+async def create_app(request: CreateAppRequest):
+    """Create a new app with an auto-generated API key."""
+    client = _get_supabase()
+    if not client:
+        raise HTTPException(status_code=503, detail="Database not configured")
+    if not request.name.strip():
+        raise HTTPException(status_code=400, detail="name is required")
+
+    api_key = generate_api_key()
+    payload = {
+        "user_id": request.user_id,
+        "name": request.name.strip(),
+        "description": (request.description or "").strip() or None,
+        "api_key": api_key,
+    }
+    try:
+        result = (
+            client.table("apps")
+            .insert(payload)
+            .select("id,user_id,name,description,api_key,created_at")
+            .single()
+            .execute()
+        )
+        if not result.data:
+            raise HTTPException(status_code=500, detail="Failed to create app")
+        return result.data
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.delete("/apps/{app_id}")
+async def delete_app(app_id: str):
+    """Delete an app by ID."""
+    client = _get_supabase()
+    if not client:
+        raise HTTPException(status_code=503, detail="Database not configured")
+    try:
+        result = (
+            client.table("apps")
+            .delete()
+            .eq("id", app_id)
+            .execute()
+        )
+        return {"status": "deleted", "app_id": app_id}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 @app.on_event("startup")
