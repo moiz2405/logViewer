@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { backendAPI } from "@/lib/api/backend-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,17 +34,11 @@ export function LogRatiosPopover({ onUpdate }: LogRatiosPopoverProps) {
     setError("");
     setSuccess(false);
     try {
-      const res = await fetch("/api/summarize", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ratios),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to update log ratios");
+      await backendAPI.updateDemoLogRatios(ratios);
       setSuccess(true);
       if (onUpdate) onUpdate();
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Failed to update log ratios");
     } finally {
       setLoading(false);
     }
