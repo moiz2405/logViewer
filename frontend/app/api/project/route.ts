@@ -1,4 +1,9 @@
 import { supabase } from '@/lib/db/supabaseClient';
+import { randomBytes } from 'crypto';
+
+function generateApiKey(): string {
+  return 'sk_' + randomBytes(24).toString('base64url');
+}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -11,9 +16,10 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { user_id, name, description, url } = body;
+  const { user_id, name, description } = body;
   if (!user_id || !name) return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
-  const { data, error } = await supabase.from('apps').insert([{ user_id, name, description, url }]).select();
+  const api_key = generateApiKey();
+  const { data, error } = await supabase.from('apps').insert([{ user_id, name, description, api_key }]).select();
   if (error) return new Response(JSON.stringify({ error }), { status: 500 });
   return new Response(JSON.stringify(data[0]), { status: 201 });
 }
