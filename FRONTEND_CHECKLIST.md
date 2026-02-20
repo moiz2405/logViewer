@@ -11,11 +11,6 @@ Quick checklist before deploying to Vercel.
 Create `frontend/.env.production.local` (for your reference - DON'T commit):
 
 ```bash
-# Supabase (from supabase.com dashboard)
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-
 # Google OAuth (from console.cloud.google.com)
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
@@ -27,6 +22,8 @@ NEXTAUTH_URL=https://logsentry.vercel.app
 # Backend (update after backend deployed)
 NEXT_PUBLIC_BACKEND_URL=https://api.logsentry.io
 ```
+
+> **No Supabase creds needed!** Backend handles database access.
 
 **PowerShell command to generate NEXTAUTH_SECRET:**
 ```powershell
