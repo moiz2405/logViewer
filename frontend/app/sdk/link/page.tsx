@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
 type LinkState = "loading" | "needs_login" | "success" | "error";
 
-export default function SdkLinkPage() {
+function SdkLinkContent() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const [state, setState] = useState<LinkState>("loading");
@@ -14,7 +14,7 @@ export default function SdkLinkPage() {
   const [done, setDone] = useState(false);
 
   const backendBase = useMemo(
-    () => (process.env.NEXT_PUBLIC_INGEST_URL ?? "http://localhost:8001").replace(/\/$/, ""),
+    () => (process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8001").replace(/\/$/, ""),
     []
   );
 
@@ -92,5 +92,18 @@ export default function SdkLinkPage() {
       ) : null}
       {state === "error" ? <p className="mt-4 text-red-400">Please retry `sentry-logger init`.</p> : null}
     </main>
+  );
+}
+
+export default function SdkLinkPage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto mt-20 max-w-2xl rounded-xl border border-zinc-700 bg-zinc-900 p-6 text-zinc-100">
+        <h1 className="mb-2 text-2xl font-semibold">SDK CLI Linking</h1>
+        <p className="text-zinc-300">Loading...</p>
+      </main>
+    }>
+      <SdkLinkContent />
+    </Suspense>
   );
 }
