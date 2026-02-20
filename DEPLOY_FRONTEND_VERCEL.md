@@ -48,12 +48,7 @@ New-Item -Path "frontend\.env.production.local" -ItemType File -Force
 ```bash
 # frontend/.env.production.local
 
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
-# Google OAuth
+# Google OAuth (from console.cloud.google.com)
 GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=GOCSPX-xxxxx
 
@@ -64,6 +59,9 @@ NEXTAUTH_URL=https://logsentry.vercel.app
 # Backend API (update after backend is deployed)
 NEXT_PUBLIC_BACKEND_URL=https://api.logsentry.io
 ```
+
+> **Note:** Frontend does NOT need Supabase credentials!  
+> All database operations go through your backend API.
 
 **Generate NEXTAUTH_SECRET:**
 ```powershell
@@ -117,14 +115,13 @@ NEXT_PUBLIC_BACKEND_URL=https://api.logsentry.io
    
    | Name | Value |
    |------|-------|
-   | `NEXT_PUBLIC_SUPABASE_URL` | `https://xxxxx.supabase.co` |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGci...` |
-   | `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGci...` |
    | `GOOGLE_CLIENT_ID` | `xxxxx.apps.googleusercontent.com` |
    | `GOOGLE_CLIENT_SECRET` | `GOCSPX-xxxxx` |
    | `NEXTAUTH_SECRET` | `your-generated-secret` |
    | `NEXTAUTH_URL` | `https://logsentry.vercel.app` |
    | `NEXT_PUBLIC_BACKEND_URL` | `https://api.logsentry.io` |
+   
+   > **No Supabase credentials needed!** Backend handles all database access.
 
 6. **Click "Deploy"**
 
