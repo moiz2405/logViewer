@@ -147,23 +147,25 @@ export function SectionCards() {
                 <div className="flex gap-2 font-medium line-clamp-1">
                   {/* You can add more info here if needed */}
                 </div>
-                <Badge
-                  variant="outline"
-                  className="relative z-30 mt-1"
-                  onClick={e => e.stopPropagation()}
-                >
-                  <span
-                    role="button"
-                    tabIndex={0}
-                    className="flex items-center gap-1 cursor-pointer text-violet-400 hover:underline"
-                    onClick={e => {
-                      e.stopPropagation();
-                      window.open(app.url, '_blank', 'noopener,noreferrer');
-                    }}
+                {app.url && (
+                  <Badge
+                    variant="outline"
+                    className="relative z-30 mt-1"
+                    onClick={e => e.stopPropagation()}
                   >
-                    Live Link <IconExternalLink className="size-4" />
-                  </span>
-                </Badge>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="flex items-center gap-1 cursor-pointer text-violet-400 hover:underline"
+                      onClick={e => {
+                        e.stopPropagation();
+                        window.open(app.url, '_blank', 'noopener,noreferrer');
+                      }}
+                    >
+                      Live Link <IconExternalLink className="size-4" />
+                    </span>
+                  </Badge>
+                )}
                 <div className="text-muted-foreground">
                   {/* Optionally show more metadata */}
                 </div>
