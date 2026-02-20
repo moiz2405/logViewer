@@ -18,6 +18,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { IconFolderCode } from "@tabler/icons-react";
+import { backendAPI } from "@/lib/api/backend-api";
 
 interface AppScreenProps {
   appId: string;
@@ -36,8 +37,8 @@ export function AppScreen({ appId }: AppScreenProps) {
   useEffect(() => {
     setLoading(true);
     setError("");
-    fetch(`/api/project/${appId}`)
-      .then((res) => res.json())
+    backendAPI
+      .getApp(appId)
       .then((data) => setAppData(data))
       .catch(() => setError("Failed to fetch app details"))
       .finally(() => setLoading(false));
@@ -45,9 +46,9 @@ export function AppScreen({ appId }: AppScreenProps) {
 
   useEffect(() => {
     function fetchSummary() {
-      fetch(`/api/summarize?appId=${appId}`)
-        .then((res) => res.json())
-        .then((data) => {
+      backendAPI
+        .getSummary(appId)
+        .then((data: any) => {
           if (data.summary) {
             setSummary(data.summary);
           }
