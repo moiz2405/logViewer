@@ -2,7 +2,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -10,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import React, { useEffect, useState } from "react"
+import { backendAPI } from "@/lib/api/backend-api"
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -19,12 +19,12 @@ export function SiteHeader() {
   useEffect(() => {
     // If route is /my-app/[appId], fetch app data
     if (segments[0] === "my-app" && segments[1]) {
-      fetch(`/api/project/${segments[1]}`)
-        .then(res => res.json())
-        .then(data => setAppName(data?.name))
+      backendAPI
+        .getApp(segments[1])
+        .then((data: any) => setAppName(data?.name))
         .catch(() => setAppName(undefined));
     }
-  }, [pathname]);
+  }, [pathname, segments]);
 
   const crumbs = [
     { name: "Home", href: "/" },
