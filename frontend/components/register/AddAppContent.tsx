@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import React, { useState } from "react"
+import { backendAPI } from "@/lib/api/backend-api"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -41,18 +42,19 @@ export function AddAppContent() {
     setError("")
     setSuccess(false)
     setCreatedApp(null)
+    
+    if (!session?.user?.id) {
+      setError("You must be logged in to create an app")
+      setLoading(false)
+      return
+    }
+    
     try {
-      const res = await fetch("/api/project", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: session?.user?.id,
-          name: name.trim(),
-          description: description.trim() || undefined,
-        }),
+      const data: any = await backendAPI.createApp({
+        user_id: session.user.id,
+        name: name.trim(),
+        description: description.trim() || undefined,
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || "Failed to add app")
       setSuccess(true)
       setCreatedApp({ id: data.id, name: data.name, api_key: data.api_key })
       setName("")
@@ -73,7 +75,7 @@ export function AddAppContent() {
     }
   }
 
-  const ingestBase = process.env.NEXT_PUBLIC_INGEST_URL ?? "http://localhost:8001"
+  const ingestBase = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8001"
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-6 py-10 bg-gradient-to-b from-black via-zinc-950 to-black">
