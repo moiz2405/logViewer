@@ -14,6 +14,7 @@ A self-hosted log monitoring platform with a beautiful dashboard, similar to Sen
 - 🌐 **Next.js frontend** with modern UI
 - 🔔 **Smart alerts** and log summaries (AI-powered)
 - 🌍 **Works Anywhere** - Monitor apps running locally, in staging, or production ([ENVIRONMENTS.md](ENVIRONMENTS.md))
+- 🔒 **Secure Architecture** - Frontend talks only to backend API, no direct database access
 
 ---
 
