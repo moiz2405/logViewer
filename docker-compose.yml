@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   sentry:
     build: ./sentry
@@ -6,13 +7,40 @@ services:
     ports:
       - "8001:8001"
     restart: always
+    env_file:
+      - .env.local
     environment:
       - PYTHONUNBUFFERED=1
+      - SDK_VERIFICATION_BASE_URL=http://host.docker.internal:3000
+      - SDK_DEFAULT_DSN=http://sentry:8001
+    networks:
+      - sentry-network
+    volumes:
+      - ./sentry:/app
+      - ./sdk:/sdk
+
   myapp:
-    build: ./myApp
-    container_name: myapp-backend
+    build: ./examples/myApp
+    container_name: myapp-demo
     ports:
       - "8000:8000"
     restart: always
     environment:
       - PYTHONUNBUFFERED=1
+      - LOGSENTRY_URL=http://sentry:8001
+      # Set LOGSENTRY_API_KEY to enable logging to dashboard
+      # Get your API key from http://localhost:3000/register
+    depends_on:
+      - sentry
+    networks:
+      - sentry-network
+    volumes:
+      - ./examples/myApp:/app
+      - ./sdk:/sdk  # Mount SDK for installation
+
+networks:
+  sentry-network:
+    driver: bridge
+
+volumes:
+  sentry-config:
