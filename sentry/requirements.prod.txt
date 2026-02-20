@@ -1,3 +1,1 @@
-# gunicorn==21.2.0
-
-# Add to existing requirements.txt for production
+gunicorn==21.2.0
