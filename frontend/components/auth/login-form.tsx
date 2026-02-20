@@ -9,10 +9,15 @@ import {
 } from "@/components/ui/field";
 import { signIn } from "next-auth/react";
 
+interface LoginFormProps extends React.ComponentProps<"div"> {
+  callbackUrl?: string;
+}
+
 export function LoginForm({
   className,
+  callbackUrl = "/",
   ...props
-}: React.ComponentProps<"div">) {
+}: LoginFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <form>
@@ -36,7 +41,7 @@ export function LoginForm({
               variant="outline"
               type="button"
               className="flex items-center justify-center w-full gap-2 px-6 py-3 text-base font-semibold border border-blue-400 rounded-full shadow-md bg-blue-700/80 hover:bg-blue-800 hover:shadow-lg text-zinc-100"
-              onClick={() => signIn("google", { redirectTo: "/" })}
+              onClick={() => signIn("google", { redirectTo: callbackUrl })}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -54,8 +59,7 @@ export function LoginForm({
         </FieldGroup>
       </form>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our{" "}
-        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
       </FieldDescription>
     </div>
   );
