@@ -22,63 +22,42 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { Spinner } from "@/components/ui/spinner"
+import { IconCopy } from "@tabler/icons-react"
 
 export function AddAppContent() {
   const { data: session } = useSession()
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [url, setUrl] = useState("")
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [createdApp, setCreatedApp] = useState<{ id: string; name: string; api_key: string } | null>(null)
   const [error, setError] = useState("")
 
-  const isUrlValid =
-    url.trim().startsWith("http://") || url.trim().startsWith("https://")
-  const isFormValid = name.trim() !== "" && url.trim() !== "" && isUrlValid
+  const isFormValid = name.trim() !== ""
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError("")
     setSuccess(false)
+    setCreatedApp(null)
     try {
-      // Check for duplicate app URL for this user
-      let duplicate = false
-      let checked = false
-      try {
-        const checkRes = await fetch(`/api/project?user_id=${session?.user?.id}`)
-        if (checkRes.ok) {
-          const existingApps = await checkRes.json()
-          duplicate = existingApps.some((app: any) => (app.url?.trim().toLowerCase() === url.trim().toLowerCase()))
-          checked = true
-        }
-      } catch {
-        toast.error("Could not check for duplicates. Please try again.")
-        setLoading(false)
-        return
-      }
-      if (checked && duplicate) {
-        toast.error("Project already exists")
-        setLoading(false)
-        return
-      }
-      const appUrl = url.trim() === "" ? "user's app" : url
       const res = await fetch("/api/project", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: session?.user?.id,
-          name,
-          description,
-          url: appUrl,
+          name: name.trim(),
+          description: description.trim() || undefined,
         }),
       })
-      if (!res.ok) throw new Error((await res.json()).error || "Failed to add app")
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Failed to add app")
       setSuccess(true)
+      setCreatedApp({ id: data.id, name: data.name, api_key: data.api_key })
       setName("")
       setDescription("")
-      setUrl("")
-      toast.success("App registered successfully!")
+      toast.success("App registered successfully! Copy your API key below.")
     } catch (err: any) {
       setError(err.message)
       toast.error(`${err.message}`)
@@ -86,6 +65,15 @@ export function AddAppContent() {
       setLoading(false)
     }
   }
+
+  function copyApiKey() {
+    if (createdApp?.api_key) {
+      navigator.clipboard.writeText(createdApp.api_key)
+      toast.success("API key copied to clipboard")
+    }
+  }
+
+  const ingestBase = process.env.NEXT_PUBLIC_INGEST_URL ?? "http://localhost:8001"
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-6 py-10 bg-gradient-to-b from-black via-zinc-950 to-black">
@@ -111,6 +99,46 @@ export function AddAppContent() {
               </ItemContent>
             </Item>
           </div>
+        ) : createdApp ? (
+          <div className="space-y-6">
+            <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-700">
+              <p className="mb-2 text-sm font-medium text-zinc-400">Your API Key (save it - shown once)</p>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 px-3 py-2 text-sm font-mono break-all rounded-lg bg-zinc-800 text-zinc-100">
+                  {createdApp.api_key}
+                </code>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={copyApiKey}
+                  className="shrink-0"
+                >
+                  <IconCopy className="size-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-700">
+              <p className="mb-2 text-sm font-medium text-zinc-400">Install the SDK in your FastAPI app</p>
+              <pre className="p-3 text-xs font-mono overflow-x-auto rounded-lg bg-zinc-950 text-zinc-300">
+{`pip install sentry-logger
+# Or from repo: pip install ./sdk/python
+
+# In your FastAPI app (e.g. main.py):
+from sentry_logger import init
+init(api_key="${createdApp.api_key}", dsn="${ingestBase}")
+`}
+              </pre>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCreatedApp(null)}
+              className="w-full"
+            >
+              Add another app
+            </Button>
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
             <FieldGroup>
@@ -119,7 +147,7 @@ export function AddAppContent() {
                   Application Details
                 </FieldLegend>
                 <FieldDescription className="mb-4 text-sm text-zinc-400">
-                  Provide information about your app and its logging endpoint.
+                  Create an app to get an API key. Install the SDK in your backend to send logs to your dashboard.
                 </FieldDescription>
 
                 <FieldGroup className="space-y-5">
@@ -132,20 +160,6 @@ export function AddAppContent() {
                       placeholder="Enter app name"
                       required
                       autoComplete="off"
-                      className="transition-all bg-zinc-800/70 text-zinc-100 border-zinc-700 placeholder-zinc-500 focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
-                    />
-                  </Field>
-
-                  <Field>
-                    <FieldLabel htmlFor="app-url">App URL</FieldLabel>
-                    <Input
-                      id="app-url"
-                      type="url"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      placeholder="https://example.com/app"
-                      autoComplete="off"
-                      required
                       className="transition-all bg-zinc-800/70 text-zinc-100 border-zinc-700 placeholder-zinc-500 focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
                     />
                   </Field>
@@ -172,7 +186,7 @@ export function AddAppContent() {
                   disabled={!isFormValid || loading}
                   className={`w-full py-2 rounded-xl bg-primary text-primary-foreground font-semibold transition-all duration-200 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-primary/40 ${isFormValid ? '' : 'pointer-events-none'}`}
                 >
-                  {loading ? "Registering..." : "Register App"}
+                  Register App
                 </Button>
               </Field>
             </FieldGroup>
