@@ -19,6 +19,7 @@ PyPDF2
 
 # Additional Backend Dependencies
 python-dotenv==1.0.0
+supabase==2.10.0
 asyncio-mqtt==0.16.1
 aiofiles==23.2.1
 python-json-logger==2.0.7
