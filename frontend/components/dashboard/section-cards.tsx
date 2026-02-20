@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { IconExternalLink, IconTrash } from "@tabler/icons-react"
 import { Badge } from "@/components/ui/badge"
+import { backendAPI } from "@/lib/api/backend-api"
 import {
   Card,
   CardAction,
@@ -37,7 +38,7 @@ export function SectionCards() {
   const router = useRouter()
   const pathname = usePathname()
   const { data: session } = useSession()
-  const [apps, setApps] = useState([])
+  const [apps, setApps] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [confirmId, setConfirmId] = useState<string | null>(null)
@@ -45,9 +46,10 @@ export function SectionCards() {
   useEffect(() => {
     if (session?.user?.id) {
       setLoading(true)
-      fetch(`/api/project?user_id=${session.user.id}`)
-        .then((res) => res.json())
-        .then((data) => setApps(data))
+      backendAPI
+        .getApps(session.user.id)
+        .then((data: any) => setApps(data))
+        .catch((error) => console.error('Failed to load apps:', error))
         .finally(() => setLoading(false))
     }
   }, [session?.user?.id])
@@ -55,14 +57,10 @@ export function SectionCards() {
   const handleDelete = async (appId: string) => {
     setDeletingId(appId)
     try {
-      const res = await fetch('/api/project', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ app_id: appId })
-      })
-      if (!res.ok) throw new Error('Failed to delete app')
+      await backendAPI.deleteApp(appId)
       setApps((prev) => prev.filter((app: any) => app.id !== appId))
     } catch (err) {
+      console.error('Failed to delete app:', err)
       // Optionally show a toast error
     } finally {
       setDeletingId(null)
